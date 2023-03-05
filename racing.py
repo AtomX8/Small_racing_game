@@ -6,7 +6,7 @@ import math
 # Return the sine of different values
 pygame.init()
 
-screen = pygame.display.set_mode((640,480),SCALED,OPENGL)
+screen = pygame.display.set_mode((1280,720),SCALED,OPENGL)
 clock = pygame.time.Clock()
 font = pygame.font.SysFont("terminal", 22)
 player_1_position_x = 150
@@ -55,50 +55,57 @@ while loop:
 	pressed_keys = pygame.key.get_pressed()
 
 	if velx>0:
-		velx+= int((-velx*0.2))
+		velx+= int((-velx*0.1))
 	elif velx<0:
-		velx-= int((velx*0.2))
+		velx-= int((velx*0.1))
 	if vely>0:
-		vely+= int((-vely*0.2))
+		vely+= int((-vely*0.1))
 	elif vely<0:
-		vely-= int((vely*0.2))
-	if vel>0:
-		vel-=5
-	elif vel<0:
-		vel+=5
+		vely-= int((vely*0.1))
+
+
+	# if vel>0:
+	# 	vel-=5
+	# elif vel<0:
+	# 	vel+=5
 
 	for event in pygame.event.get():
 		if event.type == pygame.QUIT:
 			loop = 0    
 	if pressed_keys[K_d]:
 		if steering_degree >= 0:
-			steering_degree -= 5
+			steering_degree -= 6
 		else:
 			steering_degree = 359
 			
 	if pressed_keys[K_a]:	
 		if steering_degree < 360:
-			steering_degree += 5
+			steering_degree += 6
 		else:
 			steering_degree = 0
 
-	if pressed_keys[K_s]:
-		if vel < 150:
-			vel+=80
+
 			
 	if pressed_keys[K_w]:	
-		if vel > -150:
-			vel-=80
-
-
+		if vel > -120:
+			vel-=2
+	if pressed_keys[K_s]:
+		if vel < 50:
+			vel+=1
+	if not pressed_keys[K_s] and not pressed_keys[K_w]:
+		vel = 0
 	# print (f'degree: {steering_degree}')
-
 	steering_degree_radian = math.radians(steering_degree) # / (90 /1.57) 
 	degree_x = round(math.sin(steering_degree_radian),2)
 	degree_y =  round(math.cos(steering_degree_radian),2)
-	velx = velx + vel*degree_x
-	vely = vely + vel*degree_y
+	velx = int(velx + vel*degree_x)
+	vely = int(vely + vel*degree_y)
 	print (f'velocity x: {velx} velocity y: {vely} speed: {vel}')
+
+	# print (f'1 x: {degree_x} 1 y: {degree_y}')
+	velx = int(velx + vel*int(degree_x))
+	vely = int(vely + vel*int(degree_y))
+
 	clock.tick(60) # fps
 	player_1_position_x += (velx/100)
 	player_1_position_y += (vely/100)
