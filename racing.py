@@ -14,13 +14,13 @@ player_1_position_y = 180
 speed = 0
 velocity = [0,0]
 steering_degree = 270
-car_size = [40,80]
+car_size = [45,100]
 car_size_transform = [0,0]
 steering_percent = [0,0]
 steering_power = 0
 diameter = 0.5 # in meters
-wheel_base = 40
-
+wheel_base = car_size[1]/2.8
+car_center = [0,0]
 
 
 sourceFileDir = os.path.dirname(os.path.abspath(__file__))
@@ -33,20 +33,13 @@ white = (255, 255, 255)
 mini_dot.set_colorkey(white) 
 
 class wheels:
-	global wheel,wheel_transoform,wheel_size_transform,wheel_center
+	global wheel,wheel_transform
 	wheel_size_transform =[0,0]
-	wheel_center = [0,0]
 	wheel = pygame.Surface((5, 10), pygame.SRCALPHA)
 	wheel.fill((0,0,0))
-	def center(self,wheel_transform):
-		wheel_size_transform[0], wheel_size_transform[1] = wheel_transform.get_size()
-		wheel_center = [player_1_position_x-(wheel_size_transform[0]/2),player_1_position_y-(wheel_size_transform[1]/2)]
-
-		return wheel_center
 	def rotation(self,degree):
 		wheel_transform = pygame.transform.rotate(wheel, degree) 
-		self.center(wheel_transform)
-		return wheel_transform,wheel_center
+		return wheel_transform
 
     
 fr = wheels()
@@ -63,6 +56,7 @@ def update_fps():
 	return fps_text
 def text():
 	text = f'velocity x: {velocity[0]} velocity y: {velocity[1]} speed: {abs(speed)} position x {round(player_1_position_x)} position y {round(player_1_position_y,2)}'
+
 	final_text = font.render(text, 1, pygame.Color("coral"))
 	return final_text
 # screen renderer
@@ -74,27 +68,25 @@ def screen_draw(player_1_position_x, player_1_position_y):
 	screen.blit(input_map, (40, 40)) # player 1 test
 	screen.blit(mini_dot, (70-(degree_x *40), 70 -(degree_y*40))) # player 1 test
 	screen.blit(update_fps(), (10,10))
+	screen.blit(car_transform, (car_center[0]+2,car_center[1]+2))
+	screen.blit(fr.rotation(steering_degree),
+		((player_1_position_x)-(wheel_base*degree_x)+20*degree_y,
+   		(player_1_position_y-(wheel_base*degree_y)-20*degree_x
+      	)))
+	screen.blit(rr.rotation(steering_degree), 
+	    ((player_1_position_x)+(wheel_base*degree_x)+20*degree_y,
+      	(player_1_position_y+(wheel_base*degree_y)-20*degree_x
+		)))
+	screen.blit(fl.rotation(steering_degree),
+		((player_1_position_x)-(wheel_base*degree_x)-20*degree_y,
+   		(player_1_position_y-(wheel_base*degree_y)+20*degree_x
+      	)))
+	screen.blit(rl.rotation(steering_degree), 
+	    ((player_1_position_x)+(wheel_base*degree_x)-20*degree_y,
+      	(player_1_position_y+(wheel_base*degree_y)+20*degree_x
+		)))
 	screen.blit(text(), (70,10))
-	screen.blit(car_transform, (car_center[0],car_center[1]))
-
-	screen.blit(fr.rotation(steering_degree)[0],
-		((player_1_position_x)-fr.rotation(steering_degree)[1][0]-(wheel_base*degree_x)+20*degree_y,
-   		(player_1_position_y-fr.rotation(steering_degree)[1][1]-(wheel_base*degree_y)-20*degree_x
-      	)))
-	screen.blit(rr.rotation(steering_degree)[0], 
-	    ((player_1_position_x)-rr.rotation(steering_degree)[1][0]+(wheel_base*degree_x)+20*degree_y,
-      	(player_1_position_y-rr.rotation(steering_degree)[1][1]+(wheel_base*degree_y)-20*degree_x
-		)))
-	screen.blit(fl.rotation(steering_degree)[0],
-		((player_1_position_x)-fl.rotation(steering_degree)[1][0]-(wheel_base*degree_x)-20*degree_y,
-   		(player_1_position_y-fl.rotation(steering_degree)[1][1]-(wheel_base*degree_y)+20*degree_x
-      	)))
-	screen.blit(rl.rotation(steering_degree)[0], 
-	    ((player_1_position_x)-rl.rotation(steering_degree)[1][0]+(wheel_base*degree_x)-20*degree_y,
-      	(player_1_position_y-rl.rotation(steering_degree)[1][1]+(wheel_base*degree_y)+20*degree_x
-		)))
 	pygame.display.update()
-
 # main loop
 loop = 1
 while loop:
